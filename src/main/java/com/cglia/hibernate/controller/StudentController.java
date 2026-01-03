@@ -2,6 +2,8 @@ package com.cglia.hibernate.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,42 +21,63 @@ import com.cglia.hibernate.service.StudentService;
 @RequestMapping("/student")
 public class StudentController {
 
-	private final StudentService studentService;
+    private static final Logger logger =
+            LoggerFactory.getLogger(StudentController.class);
 
-	public StudentController(StudentService studentService) {
-		this.studentService = studentService;
-	}
+    private final StudentService studentService;
 
-	@PostMapping("/save")
-	public ResponseEntity<String> saveStudentDetails(@RequestBody StudentBean student) {
-		try {
-			studentService.saveStudentDetails(student);
-			return new ResponseEntity<>("Student saved successfully", HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+    public StudentController(StudentService studentService) {
+        this.studentService = studentService;
+    }
 
-	@GetMapping("/view/all")
-	public List<StudentBean> viewAllStudentDetails() {
+    @PostMapping("/save")
+    public ResponseEntity<String> saveStudentDetails(@RequestBody StudentBean student) {
+        logger.info("Received request to save student details");
 
-		return studentService.getAllStudentDetails();
-	}
+        try {
+            logger.debug("Student data received: {}", student);
+            studentService.saveStudentDetails(student);
+            logger.info("Student saved successfully");
+            return new ResponseEntity<>("Student saved successfully", HttpStatus.OK);
 
-	@GetMapping("/view/{studentId}")
-	public StudentBean viewStudentdetail(@PathVariable Long studentId) {
+        } catch (Exception e) {
+            logger.error("Error while saving student details", e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-		return studentService.getStudentdetail(studentId);
-	}
+    @GetMapping("/view/all")
+    public List<StudentBean> viewAllStudentDetails() {
+        logger.info("Received request to fetch all student details");
 
-	@DeleteMapping("/delete/{studentId}")
-	public ResponseEntity<String> removeStudent(@PathVariable Long studentId) {
-		try {
-			studentService.deleteStudentRecord(studentId);
-			return new ResponseEntity<>("Student deleted successfully", HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-		}
-	}
+        List<StudentBean> students = studentService.getAllStudentDetails();
+        logger.debug("Total students found: {}", students.size());
 
+        return students;
+    }
+
+    @GetMapping("/view/{studentId}")
+    public StudentBean viewStudentdetail(@PathVariable Long studentId) {
+        logger.info("Received request to fetch student with ID: {}", studentId);
+
+        StudentBean student = studentService.getStudentdetail(studentId);
+        logger.debug("Student details: {}", student);
+
+        return student;
+    }
+
+    @DeleteMapping("/delete/{studentId}")
+    public ResponseEntity<String> removeStudent(@PathVariable Long studentId) {
+        logger.info("Received request to delete student with ID: {}", studentId);
+
+        try {
+            studentService.deleteStudentRecord(studentId);
+            logger.info("Student deleted successfully with ID: {}", studentId);
+            return new ResponseEntity<>("Student deleted successfully", HttpStatus.OK);
+
+        } catch (Exception e) {
+            logger.error("Error while deleting student with ID: {}", studentId, e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }
