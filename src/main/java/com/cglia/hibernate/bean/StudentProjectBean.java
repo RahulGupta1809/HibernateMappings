@@ -73,7 +73,4 @@ public class StudentProjectBean {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-    
-    
-   
 }
