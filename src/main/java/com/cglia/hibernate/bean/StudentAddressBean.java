@@ -82,7 +82,5 @@ public class StudentAddressBean {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
 
-	// Constructors, getters, and setters
 }
