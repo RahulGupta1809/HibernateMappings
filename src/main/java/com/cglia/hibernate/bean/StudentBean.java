@@ -113,6 +113,4 @@ public class StudentBean {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
-	// Constructors, getters, and setters
 }
