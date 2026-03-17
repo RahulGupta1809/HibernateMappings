@@ -8,7 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-//Bean Class
+//Bean Class New
 @Entity
 @Table(name = "student_address", catalog = "rahul_g")
 public class StudentAddressBean {
